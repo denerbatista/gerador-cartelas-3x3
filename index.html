@@ -66,6 +66,100 @@
     </div>
   </div>
   <div id="bingo-cards"></div>
-  <script src="script.js"></script>
+  <script>
+    function generateBingoCards() {
+      const quantity = parseInt(document.getElementById("quantity").value, 10);
+      const container = document.getElementById("bingo-cards");
+      const downloadBtn = document.getElementById("download-btn");
+
+      container.innerHTML = ""; // Limpa as cartelas anteriores
+      downloadBtn.disabled = true; // Desabilita o botão de download
+
+      for (let i = 0; i < quantity; i++) {
+        const card = createBingoCard();
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "bingo-card";
+        cardDiv.appendChild(card);
+        container.appendChild(cardDiv);
+      }
+
+      downloadBtn.disabled = false; // Habilita o botão de download
+    }
+
+    function createBingoCard() {
+      const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
+      const shuffled = numbers.sort(() => 0.5 - Math.random()).slice(0, 9);
+
+      const table = document.createElement("table");
+      table.className = "bingo-table";
+
+      for (let i = 0; i < 3; i++) {
+        const row = document.createElement("tr");
+        for (let j = 0; j < 3; j++) {
+          const cell = document.createElement("td");
+          cell.textContent = shuffled[i * 3 + j];
+          row.appendChild(cell);
+        }
+        table.appendChild(row);
+      }
+
+      return table;
+    }
+
+    function downloadPDF() {
+      const cards = document.querySelectorAll(".bingo-card");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      const progressBarContainer = document.getElementById("progress-bar-container");
+      const progressBar = document.getElementById("progress-bar");
+
+      if (cards.length === 0) {
+        alert("Nenhuma cartela disponível para exportar.");
+        return;
+      }
+
+      // Configurar barra de progresso
+      progressBarContainer.style.display = "block";
+      progressBar.style.width = "0%";
+
+      let positionY = 10; // Posição inicial no PDF
+      let completed = 0;
+
+      const processCard = (index) => {
+        if (index >= cards.length) {
+          // Finaliza o PDF após processar todas as cartelas
+          pdf.save("bingo_cards.pdf");
+          progressBarContainer.style.display = "none";
+          return;
+        }
+
+        // Renderiza a cartela atual
+        html2canvas(cards[index]).then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = 190; // Largura da imagem no PDF
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          if (positionY + imgHeight > 280) {
+            // Adiciona nova página se ultrapassar o limite
+            pdf.addPage();
+            positionY = 10;
+          }
+
+          pdf.addImage(imgData, "PNG", 10, positionY, imgWidth, imgHeight);
+          positionY += imgHeight + 10; // Ajusta a posição para a próxima cartela
+
+          // Atualiza a barra de progresso
+          completed++;
+          progressBar.style.width = `${(completed / cards.length) * 100}%`;
+
+          // Processa a próxima cartela
+          processCard(index + 1);
+        });
+      };
+
+      // Inicia o processamento
+      processCard(0);
+    }
+  </script>
 </body>
 </html>
