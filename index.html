@@ -15,6 +15,10 @@
       padding: 10px;
       font-size: 1rem;
     }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
     .bingo-card {
       display: inline-block;
       border: 2px solid black;
@@ -31,6 +35,21 @@
       text-align: center;
       font-size: 1.5rem;
     }
+    #progress-bar-container {
+      display: none;
+      margin: 20px 0;
+    }
+    #progress-bar {
+      width: 0;
+      height: 20px;
+      background-color: green;
+      transition: width 0.2s;
+    }
+    .progress-bar-background {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -40,7 +59,12 @@
   <label for="quantity">Quantidade de Cartelas:</label>
   <input type="number" id="quantity" min="1" value="1">
   <button onclick="generateBingoCards()">Gerar Cartelas</button>
-  <button onclick="downloadPDF()">Exportar para PDF</button>
+  <button id="download-btn" onclick="downloadPDF()" disabled>Exportar para PDF</button>
+  <div id="progress-bar-container">
+    <div class="progress-bar-background">
+      <div id="progress-bar"></div>
+    </div>
+  </div>
   <div id="bingo-cards"></div>
   <script src="script.js"></script>
 </body>

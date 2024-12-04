@@ -1,7 +1,10 @@
 function generateBingoCards() {
     const quantity = parseInt(document.getElementById("quantity").value, 10);
     const container = document.getElementById("bingo-cards");
+    const downloadBtn = document.getElementById("download-btn");
+  
     container.innerHTML = ""; // Limpa as cartelas anteriores
+    downloadBtn.disabled = true; // Desabilita o botão de download
   
     for (let i = 0; i < quantity; i++) {
       const card = createBingoCard();
@@ -10,6 +13,8 @@ function generateBingoCards() {
       cardDiv.appendChild(card);
       container.appendChild(cardDiv);
     }
+  
+    downloadBtn.disabled = false; // Habilita o botão de download
   }
   
   function createBingoCard() {
@@ -36,8 +41,14 @@ function generateBingoCards() {
     const cards = document.querySelectorAll(".bingo-card");
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
+    const progressBarContainer = document.getElementById("progress-bar-container");
+    const progressBar = document.getElementById("progress-bar");
+  
+    progressBarContainer.style.display = "block";
+    progressBar.style.width = "0%";
   
     let positionY = 10; // Posição inicial no PDF
+    let completed = 0;
   
     cards.forEach((card, index) => {
       html2canvas(card).then((canvas) => {
@@ -54,8 +65,12 @@ function generateBingoCards() {
         pdf.addImage(imgData, "PNG", 10, positionY, imgWidth, imgHeight);
         positionY += imgHeight + 10; // Ajustar posição para a próxima imagem
   
+        completed++;
+        progressBar.style.width = `${(completed / cards.length) * 100}%`;
+  
         if (index === cards.length - 1) {
           pdf.save("bingo_cards.pdf");
+          progressBarContainer.style.display = "none";
         }
       });
     });
