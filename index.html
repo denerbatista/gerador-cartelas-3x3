@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Cartelas de Bingo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    .bingo-card {
+      display: inline-block;
+      border: 2px solid black;
+      margin: 10px;
+      padding: 10px;
+    }
+    .bingo-table {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    .bingo-table td {
+      border: 1px solid black;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <h1>Gerador de Cartelas de Bingo</h1>
+  <label for="quantity">Quantidade de Cartelas:</label>
+  <input type="number" id="quantity" min="1" value="1">
+  <button onclick="generateBingoCards()">Gerar Cartelas</button>
+  <button onclick="downloadPDF()">Exportar para PDF</button>
+  <div id="bingo-cards"></div>
+  <script src="script.js"></script>
+</body>
+</html>
